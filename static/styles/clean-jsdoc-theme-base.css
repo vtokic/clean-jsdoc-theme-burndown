@@ -598,6 +598,11 @@ code {
     align-items: center;
     padding: 7rem 25rem 0;
 }
+.main-content::after {
+    content: '';
+    display: block;
+    min-height: 75vh;
+}
 
 .main-wrapper {
     width: 100%;

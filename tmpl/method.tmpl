@@ -9,8 +9,9 @@ var self = this;
     <?js } ?>
 
     <h3 class="name has-anchor" id="<?js= id ?>">
-        <?js= data.attribs + (kind === 'class' ? 'new ' : '') + name + (data.signature || '') ?>
+        <?js= data.name ?>()
     </h3>
+    <small><?js= data.attribs + (kind === 'class' ? 'new ' : '') + data.displayname + (data.signature || '') ?></small>
 
     <?js if (data.summary) { ?>
         <div class="summary"><?js= summary ?></div>

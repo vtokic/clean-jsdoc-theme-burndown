@@ -47,6 +47,9 @@ let view;
  * @type {Array<{title: string, link: string, description: string}>}
  */
 const searchList = [];
+const todoList = [];
+const doneList = [];
+const questionList = [];
 const hasSearch =
     themeOpts.search === undefined ? true : Boolean(themeOpts.search);
 
@@ -491,6 +494,49 @@ function buildSearchListForData() {
     });
 }
 
+function buildTodoListForData() {
+    const linktoFn = helper.linkto;
+    data().each((item) => {
+        if (item.todo) {
+            item.anchor = item.longname ? linktoFn(item.longname, item.name) : linktoFn('', item.name),
+            item.anchor = prefixModuleToItemAnchor(item);
+            if (typeof item.done === 'undefined') { 
+                item.done = [];
+            }
+            if (typeof item.question === 'undefined') { 
+                item.question = [];
+            }
+            
+            item.todo.forEach((task, i) => { 
+                task = task
+                    .replaceAll(/^(@\w+)/g, '$1: <span style="margin-right: 8px;"></span>')
+                    .replaceAll(/- (@\w+)/g, '<br />$1: <span style="margin-right: 8px;"></span>')
+                    .replaceAll(/@(\w+)/g, '<span class="type-signature" style="text-transform: capitalize;" data-tag="$1">$1</span>');
+                
+                if (task.indexOf('data-tag="done"') >= 0) {
+                    item.done.push(`<span>${task}</span>`);
+                    item.todo[i] = undefined;
+                } else if (task.indexOf('data-tag="question"') >= 0) {
+                    item.question.push(`<span>${task}</span>`);
+                    item.todo[i] = undefined;
+                } else { 
+                    item.todo[i] = `<span>${task}</span>`;
+                }
+            })
+            item.todo = item.todo.filter((e) => typeof e !== 'undefined');
+            if (item.todo.length) { 
+                todoList.push(item);
+            }
+            if (item.done.length) { 
+                doneList.push(item);
+            }
+            if (item.question.length) { 
+                questionList.push(item);
+            }
+        }
+    });
+}
+
 function linktoTutorial(longName, name) {
     return tutoriallink(name);
 }
@@ -705,10 +751,14 @@ exports.publish = async function (taffyData, opts, tutorials) {
         data.sort('longname, version, since');
     }
 
+
+
     helper.addEventListeners(data);
 
     data().each((doclet) => {
         let sourcePath;
+
+        doclet.displayname = doclet.longname.replace('#','.');
 
         doclet.attribs = '';
 
@@ -928,6 +978,8 @@ exports.publish = async function (taffyData, opts, tutorials) {
     const includeFilesListInHomepage =
         themeOpts.includeFilesListInHomepage || false;
 
+    buildTodoListForData();
+    
     await generate(
         homepageTitle,
         packages
@@ -935,6 +987,10 @@ exports.publish = async function (taffyData, opts, tutorials) {
                 {
                     kind: 'mainpage',
                     readme: opts.readme,
+                    questionList,
+                    todoList,
+                    doneList,
+                    realrender: true,
                     longname: opts.mainpagetitle
                         ? opts.mainpagetitle
                         : 'Main Page',

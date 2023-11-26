@@ -3,8 +3,9 @@ var data = obj;
 var self = this;
 ?>
 <h3 class="name has-anchor" id="<?js= id ?>">
-    <?js= data.attribs + name + (data.signature ? data.signature : '') ?>
+    <?js= data.name ?>
 </h3>
+<small><?js= data.attribs + data.displayname + (data.signature ? data.signature : '') ?></small>
 
 <?js if (data.summary) { ?>
 <div class="summary"><?js= summary ?></div>

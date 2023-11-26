@@ -1,10 +1,122 @@
 <?js
 var data = obj;
 var self = this;
+let n=0;
 ?>
 
-<?js if (data.readme) { ?>
-    <section class="readme">
+<?js if (data.realrender) { ?>
+    <section class="mainpage">
+    <?js if (data.readme) { ?>
         <article><?js= data.readme ?></article>
+    <?js } ?>
+
+
+    <?js if (data.questionList) {  ?>
+
+        <?js 
+            let questionCount = 0;
+            data.questionList.forEach(function(item) {
+                item.question.forEach(function(t) {
+                    questionCount++;
+                })
+            })
+        ?>
+
+        <h1 id="question">Open questions <small style="font-size: 0.5em; vertical-align: text-top;">(<?js= questionCount ?>)</small></h1>
+        <p class="bold">Unanswered questions in the documentation:<p>
+        <?js data.questionList.forEach(function(item) { n++; ?>
+            <div style="padding-left: 20px;">
+                <?js item.question.forEach(function(t) { ?>
+                    <dl class="details">
+                        <div class="details-item-container">
+                            <dd class="tag-source">
+                                <ul>
+                                    <li>
+                                        <?js= t ?>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </div>
+                    </dl>
+                <?js }); ?>
+                <small style="display:block; transform: translateY(-10px); text-align: right;">
+                    In: <?js= item.anchor?> (<?js= self.linkto(item.meta.shortpath, item.meta.shortpath + ' :'+item.meta.lineno, null, 'line' + item.meta.lineno) ?>)
+                </small>
+                <div style="visibility: hidden; display:block; overflow: hidden; height:0;">
+                    <br/><!-- invisible empty line for copy/pasting purposes -->
+                </div>
+            </div>
+        <?js }); ?>
+    <?js } ?>
+
+    <?js if (data.todoList) {  ?>
+
+        <?js 
+            let taskCount = 0;
+            data.todoList.forEach(function(item) {
+                item.todo.forEach(function(t) {
+                    taskCount++;
+                })
+            })
+        ?>
+
+        <h1 id="todo">Open tasks <small style="font-size: 0.5em; vertical-align: text-top;">(<?js= taskCount ?>)</small></h1>
+        <p class="bold">"To do" tasks mentioned in the documentation:<p>
+        <?js data.todoList.forEach(function(item) { n++; ?>
+            <div style="padding-left: 20px;">
+                <?js item.todo.forEach(function(t) { ?>
+                    <dl class="details">
+                        <div class="details-item-container">
+                            <dd class="tag-source">
+                                <ul>
+                                    <li>
+                                        <span class="type-signature">To do</span>:<span style="margin-right: 8px;"></span> <?js= t ?>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </div>
+                    </dl>
+                <?js }); ?>
+                <small style="display:block; transform: translateY(-10px); text-align: right;">
+                    In: <?js= item.anchor?> (<?js= self.linkto(item.meta.shortpath, item.meta.shortpath + ' :'+item.meta.lineno, null, 'line' + item.meta.lineno) ?>)
+                </small>
+            </div>
+        <?js }); ?>
+    <?js } ?>
+
+
+    <?js if (data.doneList) {  ?>
+
+        <?js 
+            let doneCount = 0;
+            data.doneList.forEach(function(item) {
+                item.done.forEach(function(t) {
+                    doneCount++;
+                })
+            })
+        ?>
+        <h1 id="done">Completed tasks <small style="font-size: 0.5em; vertical-align: text-top;">(<?js= doneCount ?>)</small></h1>
+        <p class="bold">Tasks and questions marked as <span class="type-signature">@done</span> in the documentation. Not sure if it's ok to leave these in the codebase, but it's great as a burndown list.<p>
+        <?js data.doneList.forEach(function(item) { n++; ?>
+            <div style="padding-left: 20px;">
+                <?js item.done.forEach(function(t) { ?>
+                    <dl class="details">
+                        <div class="details-item-container">
+                            <dd class="tag-source">
+                                <ul>
+                                    <li>
+                                        <?js= t ?>
+                                    </li>
+                                </ul>
+                            </dd>
+                        </div>
+                    </dl>
+                <?js }); ?>
+                <small style="display:block; transform: translateY(-10px); text-align: right;">
+                    In: <?js= item.anchor?> (<?js= self.linkto(item.meta.shortpath, item.meta.shortpath + ' :'+item.meta.lineno, null, 'line' + item.meta.lineno) ?>)
+                </small>
+            </div>
+        <?js }); ?>
+    <?js } ?>
     </section>
 <?js } ?>
